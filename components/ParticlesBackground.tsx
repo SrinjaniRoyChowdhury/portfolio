@@ -96,7 +96,7 @@ export default function ParticlesBackground() {
   return (
     <canvas
       ref={canvaRef}
-      className="fixed top-0 left-0 w-full pointer-events-none"
+      className="absolute top-0 left-0 w-full pointer-events-none"
     />
   );
 }

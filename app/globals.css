@@ -8,6 +8,10 @@
   .gradient {
     background: linear-gradient(-45deg, #4E56C0 , #9B5DE0, #D78FEE);
   }
+
+  .text-heading {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white;
+  }
 }
 
 body {

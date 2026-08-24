@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import IntroAnimation from "@/components/IntroAnimation";
+import Navbar from "@/sections/Navbar";
 import Hero from "@/sections/Hero";
 import About from "@/sections/About";
 import Skills from "@/sections/Skills";
@@ -15,6 +16,7 @@ export default function Home() {
   return (
     <>
       <IntroAnimation onFinish={() => setIntroDone(true)} />
+      {introDone && <Navbar />}
       <div className="relative gradient text-white">
         <Hero ready={introDone} />
         <About />

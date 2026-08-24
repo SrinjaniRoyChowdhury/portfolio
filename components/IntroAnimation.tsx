@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Noto_Sans_Bengali, Noto_Sans_Devanagari } from "next/font/google";
+import SpecularButton from "@/components/SpecularButton";
 
 const notoBengali = Noto_Sans_Bengali({
   subsets: ["bengali"],
@@ -41,8 +42,18 @@ export default function IntroAnimation({
   );
   const [index, setIndex] = React.useState(0);
   const [visible, setVisible] = React.useState(true);
+  const finished = useRef(false);
+
+  const finish = useCallback(() => {
+    if (finished.current) return;
+    finished.current = true;
+    setVisible(false);
+    onFinish?.();
+  }, [onFinish]);
 
   useEffect(() => {
+    if (finished.current) return;
+
     if (index < greetings.length - 1) {
       const id = setTimeout(() => {
         setIndex((i) => i + 1);
@@ -52,11 +63,10 @@ export default function IntroAnimation({
     }
 
     const t = setTimeout(() => {
-      setVisible(false);
-      onFinish?.();
+      finish();
     }, 1500);
     return () => clearTimeout(t);
-  }, [index, greetings.length]);
+  }, [index, greetings.length, finish]);
 
   return (
     <AnimatePresence>
@@ -86,6 +96,30 @@ export default function IntroAnimation({
           >
             {greetings[index]}
           </motion.h1>
+
+          <div className="absolute bottom-8 right-6 md:right-8">
+            <SpecularButton
+              size="md"
+              radius={18}
+              tint="#ffffff"
+              tintOpacity={0}
+              blur={0}
+              textColor="#f5f5f5"
+              lineColor="#ffffff"
+              baseColor="#525252"
+              intensity={1}
+              shineSize={10}
+              shineFade={40}
+              thickness={1}
+              speed={0.35}
+              followMouse
+              proximity={250}
+              autoAnimate={false}
+              onClick={finish}
+            >
+              Skip Intro
+            </SpecularButton>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
