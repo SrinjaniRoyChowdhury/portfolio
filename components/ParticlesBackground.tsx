@@ -69,12 +69,24 @@ export default function ParticlesBackground() {
     }
 
     function handleResize() {
-      canvasElement.width = window.innerWidth;
-      canvasElement.height = window.innerHeight;
+      const parent = canvasElement.parentElement;
+      const width = parent?.clientWidth || window.innerWidth;
+      const height = parent?.clientHeight || window.innerHeight;
+      if (width === canvasElement.width && height === canvasElement.height) {
+        return;
+      }
+      canvasElement.width = width;
+      canvasElement.height = height;
       createParticles();
     }
 
     handleResize();
+    const parent = canvasElement.parentElement;
+    const resizeObserver =
+      parent && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(handleResize)
+        : null;
+    resizeObserver?.observe(parent);
     window.addEventListener("resize", handleResize);
 
     let animationId: number;
@@ -89,6 +101,7 @@ export default function ParticlesBackground() {
 
     return () => {
       cancelAnimationFrame(animationId);
+      resizeObserver?.disconnect();
       window.removeEventListener("resize", handleResize);
     };
   }, []);
@@ -96,7 +109,7 @@ export default function ParticlesBackground() {
   return (
     <canvas
       ref={canvaRef}
-      className="absolute top-0 left-0 w-full pointer-events-none"
+      className="pointer-events-none absolute inset-0 h-full w-full"
     />
   );
 }

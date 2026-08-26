@@ -1,12 +1,14 @@
 "use client";
 
 import ParticlesBackground from "@/components/ParticlesBackground";
+import PixelTransition from "@/components/PixelTransition";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import React, { useMemo } from "react";
 import SpecularButton from "@/components/SpecularButton";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import pixelpic from "@/public/assests/pixelpic.png";
+import mypic from "@/public/assests/mypic.png";
 
 const socials = [
   {
@@ -238,11 +240,31 @@ export default function Hero({ ready = false }: { ready?: boolean }) {
             transition={{ delay: ready ? 0.2 : 0, duration: 0.8 }}
             className="relative hidden lg:flex h-full items-center justify-end -translate-y-4"
           >
-            <Image
-              src={pixelpic}
-              alt="Pixel portrait of Srinjani"
-              priority
-              className="h-[min(62vh,520px)] w-auto max-w-[min(32vw,480px)] object-contain select-none pointer-events-none [image-rendering:pixelated]"
+            <PixelTransition
+              firstContent={
+                <Image
+                  src={pixelpic}
+                  alt="Pixel portrait of Srinjani"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) min(32vw, 440px), 0px"
+                  className="object-cover select-none [image-rendering:pixelated]"
+                />
+              }
+              secondContent={
+                <Image
+                  src={mypic}
+                  alt="Srinjani Roy Chowdhury"
+                  fill
+                  sizes="(min-width: 1024px) min(32vw, 440px), 0px"
+                  className="object-cover select-none"
+                />
+              }
+              gridSize={10}
+              pixelColor="#9B5DE0"
+              animationStepDuration={0.4}
+              aspectRatio="110.87%"
+              className="w-[min(32vw,440px)] cursor-pointer border-0 bg-transparent"
             />
           </motion.div>
         </div>
