@@ -10,8 +10,9 @@ const CONTACT_EMAIL = "roysrinjani04@gmail.com";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const cardReveal = {
-  hidden: { y: 20 },
+  hidden: { opacity: 0, y: 24 },
   show: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.55, ease },
   },
@@ -24,7 +25,15 @@ export default function About() {
       className="relative w-full bg-black text-white overflow-hidden"
     >
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-14">
-        <h2 className="text-heading">About Me</h2>
+        <motion.h2
+          className="text-heading"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5, ease }}
+        >
+          About Me
+        </motion.h2>
 
         <motion.div
           className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[15rem]"
