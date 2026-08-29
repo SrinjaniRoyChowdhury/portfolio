@@ -3,50 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import LogoLoop, { type LogoItem } from "@/components/LogoLoop";
+import { defaultCertificates } from "@/lib/content-defaults";
 
 const ease = [0.22, 1, 0.36, 1] as const;
-
-function cert(file: string, title: string): LogoItem {
-  const src = encodeURI(`/certificates/${file}`);
-
-  return {
-    src,
-    alt: title,
-    title,
-    href: src,
-  };
-}
-
-const certificates: LogoItem[] = [
-  cert(
-    "Hackhaton01_GDSC_P2D.png",
-    "GDSC plot2deploy Hackathon — 1st Place",
-  ),
-  cert(
-    "prompt engineering ibm.jpg",
-    "IBM Prompt Engineering for Everyone",
-  ),
-  cert(
-    "ESD program tiu.jpg",
-    "TIU Entrepreneurship Skill Development",
-  ),
-  cert(
-    "machine learning with python ibm.jpg",
-    "IBM Machine Learning with Python",
-  ),
-  cert(
-    "TroubleShoot Ideathon.jpg",
-    "Troubleshoot Ideathon 2025",
-  ),
-  cert(
-    "deep learning with tensorflow ibm.jpg",
-    "IBM Deep Learning with TensorFlow",
-  ),
-  cert(
-    "Python_Cloud_Skill_Challenge.jpg",
-    "Microsoft Learn Python Cloud Skills Challenge",
-  ),
-];
 
 function CertificateCard({ item }: { item: LogoItem }) {
   if (!("src" in item)) return null;
@@ -80,10 +39,19 @@ function CertificateCard({ item }: { item: LogoItem }) {
   );
 }
 
+/** Certificates list: lib/content-defaults.ts */
 export default function Certificates() {
+  const certificates = defaultCertificates;
   const [scrollDirection, setScrollDirection] = useState<"left" | "right">(
     "left",
   );
+
+  const logos: LogoItem[] = certificates.map((item) => ({
+    src: item.src,
+    alt: item.title,
+    title: item.title,
+    href: item.src,
+  }));
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -114,7 +82,7 @@ export default function Certificates() {
     >
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-16 text-center sm:px-6 md:pt-20 lg:px-8">
         <motion.h2
-          className="text-heading bg-gradient-to-r from-[#4E56C0] via-[#9B5DE0] to-[#D78FEE] bg-clip-text !text-transparent"
+          className="text-heading"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
@@ -142,7 +110,7 @@ export default function Certificates() {
         transition={{ duration: 0.45, ease }}
       >
         <LogoLoop
-          logos={certificates}
+          logos={logos}
           speed={50}
           direction={scrollDirection}
           logoHeight={176}

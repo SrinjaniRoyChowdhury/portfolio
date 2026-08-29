@@ -93,7 +93,7 @@ export default function Contact() {
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-16 sm:px-6 md:pt-20 lg:px-8">
         <div className="text-center">
           <motion.h2
-            className="text-heading bg-gradient-to-r from-[#4E56C0] via-[#9B5DE0] to-[#D78FEE] bg-clip-text !text-transparent"
+            className="text-heading"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
@@ -265,9 +265,13 @@ export default function Contact() {
       </div>
 
       <footer className="relative z-10 mt-16 border-t border-white/10">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-center text-sm text-white/50 sm:flex-row sm:px-6 sm:text-left lg:px-8">
-          <p>© {new Date().getFullYear()} Srinjani Roy Chowdhury</p>
-          <p>Built with Next.js</p>
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-center text-sm text-white/50 sm:flex-row sm:items-center sm:px-6 sm:text-left lg:px-8">
+          <p className="shrink-0">
+            © {new Date().getFullYear()} Srinjani Roy Chowdhury
+          </p>
+          <p className="min-w-0 sm:text-right">
+            Crafted with code, curiosity &amp; coffee
+          </p>
         </div>
       </footer>
     </section>

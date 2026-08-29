@@ -3,22 +3,23 @@
 import { useEffect, useRef } from "react";
 
 export default function ParticlesBackground() {
-  const canvaRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvaRef.current;
-
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const canvasElement = canvas;
     const ctx = canvas.getContext("2d");
-
     if (!ctx) return;
+
+    const canvasElement = canvas;
     const context = ctx;
 
     let particles: Particle[] = [];
     const particleCount = 50;
     const colors = ["rgba(255,255,255,0.7)"];
+    let cssWidth = 0;
+    let cssHeight = 0;
 
     class Particle {
       x: number;
@@ -29,11 +30,10 @@ export default function ParticlesBackground() {
       speedY: number;
 
       constructor() {
-        this.x = Math.random() * canvasElement.width;
-        this.y = Math.random() * canvasElement.height;
+        this.x = Math.random() * cssWidth;
+        this.y = Math.random() * cssHeight;
         this.radius = Math.random() * 2 + 1;
-        this.color =
-          colors[Math.floor(Math.random() * colors.length)];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
         this.speedX = (Math.random() - 0.5) * 0.5;
         this.speedY = (Math.random() - 0.5) * 0.5;
       }
@@ -51,10 +51,10 @@ export default function ParticlesBackground() {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        if (this.x < 0) this.x = canvasElement.width;
-        if (this.x > canvasElement.width) this.x = 0;
-        if (this.y < 0) this.y = canvasElement.height;
-        if (this.y > canvasElement.height) this.y = 0;
+        if (this.x < 0) this.x = cssWidth;
+        if (this.x > cssWidth) this.x = 0;
+        if (this.y < 0) this.y = cssHeight;
+        if (this.y > cssHeight) this.y = 0;
 
         this.draw();
       }
@@ -62,7 +62,6 @@ export default function ParticlesBackground() {
 
     function createParticles() {
       particles = [];
-
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
@@ -70,29 +69,34 @@ export default function ParticlesBackground() {
 
     function handleResize() {
       const parent = canvasElement.parentElement;
-      const width = parent?.clientWidth || window.innerWidth;
-      const height = parent?.clientHeight || window.innerHeight;
-      if (width === canvasElement.width && height === canvasElement.height) {
-        return;
-      }
-      canvasElement.width = width;
-      canvasElement.height = height;
+      const width = parent?.clientWidth || 0;
+      const height = parent?.clientHeight || 0;
+      if (width < 2 || height < 2) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cssWidth = width;
+      cssHeight = height;
+
+      canvasElement.style.width = `${width}px`;
+      canvasElement.style.height = `${height}px`;
+      canvasElement.width = Math.floor(width * dpr);
+      canvasElement.height = Math.floor(height * dpr);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
       createParticles();
     }
 
     handleResize();
+
     const parent = canvasElement.parentElement;
     const resizeObserver =
-      parent && typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(handleResize)
-        : null;
-    resizeObserver?.observe(parent);
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(handleResize) : null;
+    if (parent) resizeObserver?.observe(parent);
     window.addEventListener("resize", handleResize);
 
-    let animationId: number;
+    let animationId = 0;
 
     function animate() {
-      context.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      context.clearRect(0, 0, cssWidth, cssHeight);
       particles.forEach((p) => p.update());
       animationId = requestAnimationFrame(animate);
     }
@@ -107,9 +111,11 @@ export default function ParticlesBackground() {
   }, []);
 
   return (
-    <canvas
-      ref={canvaRef}
-      className="pointer-events-none absolute inset-0 h-full w-full"
-    />
+    <div
+      className="pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+      aria-hidden
+    >
+      <canvas ref={canvasRef} className="block" />
+    </div>
   );
 }

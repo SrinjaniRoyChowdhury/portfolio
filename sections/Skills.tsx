@@ -1,45 +1,16 @@
 "use client";
 
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import LogoLoop, { type LogoItem } from "@/components/LogoLoop";
-
-import { FaReact, FaPython, FaNodeJs, FaDocker } from "react-icons/fa";
-
-import {
-  SiTypescript,
-  SiNextdotjs,
-  SiFastapi,
-  SiTailwindcss,
-  SiLangchain,
-  SiMysql,
-  SiPostgresql,
-  SiMongodb,
-} from "react-icons/si";
+import { skillIcons, skills } from "@/lib/skills";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-function skill(name: string, icon?: ReactNode): LogoItem {
-  return {
-    node: icon ?? null,
-    title: name,
-  };
-}
-
-const skills: LogoItem[] = [
-  skill("Python", <FaPython />),
-  skill("TypeScript", <SiTypescript />),
-  skill("React.js", <FaReact />),
-  skill("Next.js", <SiNextdotjs />),
-  skill("Node.js", <FaNodeJs />),
-  skill("FastAPI", <SiFastapi />),
-  skill("Tailwind CSS", <SiTailwindcss />),
-  skill("LangChain", <SiLangchain />),
-  skill("MySQL", <SiMysql />),
-  skill("PostgreSQL", <SiPostgresql />),
-  skill("MongoDB", <SiMongodb />),
-  skill("Docker", <FaDocker />),
-];
+const skillLogos: LogoItem[] = skills.map((item) => ({
+  node: skillIcons[item.icon] ?? null,
+  title: item.name,
+}));
 
 function SkillLogo({ item }: { item: LogoItem }) {
   const title = "title" in item ? item.title : undefined;
@@ -58,6 +29,7 @@ function SkillLogo({ item }: { item: LogoItem }) {
   );
 }
 
+/** Skills list: lib/skills.ts — add items there, this marquee updates itself. */
 export default function Skills() {
   const [scrollDirection, setScrollDirection] = useState<"left" | "right">(
     "left",
@@ -70,10 +42,8 @@ export default function Skills() {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY) {
-        // Scrolling down → move left
         setScrollDirection("left");
       } else if (currentScrollY < lastScrollY) {
-        // Scrolling up → move right
         setScrollDirection("right");
       }
 
@@ -94,8 +64,6 @@ export default function Skills() {
       id="skills"
       className="relative w-full overflow-hidden bg-black text-white"
     >
-      {/* Background glow */}
-
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-16 text-center sm:px-6 md:pt-20 lg:px-8">
         <motion.h2
           className="text-heading bg-gradient-to-r from-[#4E56C0] via-[#9B5DE0] to-[#D78FEE] bg-clip-text !text-transparent"
@@ -118,7 +86,6 @@ export default function Skills() {
         </motion.p>
       </div>
 
-      {/* Full-width skills marquee */}
       <motion.div
         className="relative z-10 mt-10 w-full"
         initial={{ opacity: 0, y: 18 }}
@@ -127,7 +94,7 @@ export default function Skills() {
         transition={{ duration: 0.45, ease }}
       >
         <LogoLoop
-          logos={skills}
+          logos={skillLogos}
           speed={70}
           direction={scrollDirection}
           logoHeight={40}
@@ -141,7 +108,6 @@ export default function Skills() {
         />
       </motion.div>
 
-      {/* Bottom spacing */}
       <div className="h-14 md:h-16" />
     </section>
   );

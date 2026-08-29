@@ -1,4 +1,5 @@
 import { parseContactPayload } from "@/lib/contact";
+import { sendContactEmail } from "@/lib/contact-email";
 import { appendContactToWorkbook } from "@/lib/contact-sheet";
 
 export const runtime = "nodejs";
@@ -62,11 +63,19 @@ export async function POST(request: Request) {
     return Response.json({ ok: true });
   }
 
-  let saved = false;
+  let delivered = false;
+
+  try {
+    if (await sendContactEmail(parsed.data)) {
+      delivered = true;
+    }
+  } catch (error) {
+    console.error("Resend send error", error);
+  }
 
   try {
     await appendContactToWorkbook(parsed.data);
-    saved = true;
+    delivered = true;
   } catch (error) {
     console.error("Local spreadsheet write failed", error);
   }
@@ -86,7 +95,7 @@ export async function POST(request: Request) {
       });
 
       if (sheetRes.ok) {
-        saved = true;
+        delivered = true;
       } else {
         const details = await sheetRes.text();
         console.error("Google Sheets webhook failed", sheetRes.status, details.slice(0, 500));
@@ -96,7 +105,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (!saved) {
+  if (!delivered) {
     return Response.json(
       { ok: false, error: "Unable to send message right now." },
       { status: 502 },

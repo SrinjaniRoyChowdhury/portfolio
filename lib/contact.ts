@@ -1,18 +1,5 @@
 export const CONTACT_EMAIL = "roysrinjani04@gmail.com";
 
-export const CONTACT_LOCATION = "Kolkata, India";
-
-export const CONTACT_SOCIALS = [
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/srinjani/",
-  },
-  {
-    label: "GitHub",
-    href: "https://github.com/SrinjaniRoyChowdhury",
-  },
-] as const;
-
 export type ContactPayload = {
   name: string;
   email: string;

@@ -1,32 +1,76 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { HiMenu, HiX } from "react-icons/hi";
+import { cn } from "@/lib/utils";
+
+const navLinks = [
+  { name: "Home", href: "#hero", id: "hero" },
+  { name: "About", href: "#about", id: "about" },
+  { name: "Skills", href: "#skills", id: "skills" },
+  { name: "Projects", href: "#projects", id: "projects" },
+  { name: "Experience", href: "#experience", id: "experience" },
+  { name: "Certificates", href: "#certificates", id: "certificates" },
+  { name: "Contact", href: "#contact", id: "contact" },
+] as const;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState("hero");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const sectionIds = navLinks.map((link) => link.id);
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    function sectionAtViewport() {
+      const probe = window.innerHeight * 0.28;
+      let current = "hero";
+
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top - probe <= 0) current = id;
+      }
+
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 80;
+
+      if (atBottom) return "contact";
+      if (window.scrollY < 40) return "hero";
+      return current;
+    }
+
+    function update() {
+      setScrolled(window.scrollY > 20);
+      setActiveId(sectionAtViewport());
+    }
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
-  const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Experience", href: "#experience"},
-    { name: "Certificates", href: "#certificates"},
-    { name: "Contact", href: "#contact" },
-  ];
+  function goToSection(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    event.preventDefault();
+    const id = href.replace("#", "") || "hero";
+    const el = document.getElementById(id);
+
+    setMobileMenuOpen(false);
+    setActiveId(id);
+
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.pushState(null, "", href);
+    }
+  }
 
   return (
     <nav
@@ -37,10 +81,9 @@ export default function Navbar() {
       }`}
     >
       <div className="w-full px-6 md:px-10 lg:px-16 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="#hero" className="flex items-center gap-2.5" onClick={(event) => goToSection(event, "#hero")}>
           <Image
-            src="/images/logo.png"
+            src="/assests/logo.png"
             alt="Srinjani logo"
             width={40}
             height={40}
@@ -52,41 +95,51 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-7 ">
+        <div className="hidden md:flex items-center gap-7">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.name}
               href={link.href}
-              className="text-base font-semibold py-2 text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+              onClick={(event) => goToSection(event, link.href)}
+              aria-current={activeId === link.id ? "page" : undefined}
+              className={cn(
+                "relative py-2 text-base font-semibold transition-colors",
+                activeId === link.id
+                  ? "text-white after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#D78FEE]"
+                  : "text-white/65 hover:text-white",
+              )}
             >
               {link.name}
-            </Link>
+            </a>
           ))}
         </div>
 
-        {/* Mobile Menu Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden text-2xl text-slate-700 dark:text-slate-300 focus:outline-none"
+          className="md:hidden text-2xl text-white focus:outline-none"
           aria-label="Toggle Navigation Menu"
         >
           {mobileMenuOpen ? <HiX /> : <HiMenu />}
         </button>
       </div>
 
-      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden bg-black/95 backdrop-blur-lg border-b border-white/10 px-6 py-4 flex flex-col gap-1">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.name}
               href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-lg font-medium text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-2"
+              onClick={(event) => goToSection(event, link.href)}
+              aria-current={activeId === link.id ? "page" : undefined}
+              className={cn(
+                "rounded-lg py-2 text-lg font-medium transition-colors",
+                activeId === link.id
+                  ? "text-white"
+                  : "text-white/65 hover:text-white",
+              )}
             >
               {link.name}
-            </Link>
+            </a>
           ))}
         </div>
       )}

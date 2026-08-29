@@ -91,8 +91,7 @@ export default function Hero({ ready = false }: { ready?: boolean }) {
     >
       <ParticlesBackground />
 
-      {/* Left glow */}
-      <div className="absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 z-0">
         <div
           className="absolute -top-32 -left-32 
         w-[70vw] sm:w-[z-500vw] md:w-[40vw] 
@@ -103,8 +102,6 @@ export default function Hero({ ready = false }: { ready?: boolean }) {
         blur-[100px] sm:blur-[130px] md:blur-[150px]
         animate-pulse"
         ></div>
-
-        {/* Right glow */}
         <div
           className="absolute -bottom-0 -right-0 
         w-[70vw] sm:w-[z-500vw] md:w-[40vw] 
@@ -115,9 +112,9 @@ export default function Hero({ ready = false }: { ready?: boolean }) {
         blur-[100px] sm:blur-[130px] md:blur-[150px]
         animate-pulse delay-500"
         ></div>
+      </div>
 
-        {/* Home content */}
-        <div className="relative z-10 h-full w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 items-center pt-28 pb-28">
+      <div className="relative z-10 h-full w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 items-center pt-28 pb-28">
           <motion.div
             className="flex flex-col justify-center text-center lg:text-left relative lg:translate-y-4"
             initial="hidden"
@@ -261,14 +258,13 @@ export default function Hero({ ready = false }: { ready?: boolean }) {
                 />
               }
               gridSize={10}
-              pixelColor="#9B5DE0"
+              pixelColor="#e8e8e8"
               animationStepDuration={0.4}
               aspectRatio="110.87%"
               className="w-[min(32vw,440px)] cursor-pointer border-0 bg-transparent"
             />
           </motion.div>
         </div>
-      </div>
     </section>
   );
 }
