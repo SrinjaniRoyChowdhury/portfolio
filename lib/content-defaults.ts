@@ -163,7 +163,7 @@ export const defaultExperience: Experience[] = [
     id: "better-best",
     role: "AI Full Stack Intern",
     company: "Better Best Software Solutions",
-    duration: "April 2026 – August 2026",
+    duration: "April 2026 – present",
     description:
       "Building AI-powered and full-stack applications, working across frontend development, backend APIs, and AI integrations.",
   },

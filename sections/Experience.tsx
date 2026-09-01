@@ -86,11 +86,13 @@ function ExperienceItem({
 
   return (
     <div className="relative h-full min-w-0 flex-1">
+      {/* Timeline dot — stays centered on the line, untouched by the card offset below */}
       <motion.div
         className="absolute left-1/2 top-1/2 z-20 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_0_0_6px_rgba(255,255,255,0.12),0_0_18px_rgba(255,255,255,0.45)]"
         style={{ scale, opacity }}
       />
 
+      {/* Connector stub from dot to card */}
       <motion.div
         className={`absolute left-1/2 w-px -translate-x-1/2 bg-white/80 ${
           isAbove ? "bottom-[calc(50%+0.5rem)]" : "top-[calc(50%+0.5rem)]"
@@ -98,8 +100,10 @@ function ExperienceItem({
         style={{ height: 28, opacity }}
       />
 
+      {/* Card is nudged left of its dot (58% vs 50%) so it doesn't sit dead-center
+          under the heading above it, and gets breathing room from the timeline itself. */}
       <motion.article
-        className={`absolute left-1/2 w-[min(20rem,calc(100%-0.5rem))] -translate-x-1/2 rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-xl backdrop-blur-xl ${
+        className={`absolute left-1/2 w-[min(20rem,calc(100%-0.5rem))] -translate-x-[58%] rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-xl backdrop-blur-xl ${
           isAbove
             ? "bottom-[calc(50%+2.75rem)]"
             : "top-[calc(50%+2.75rem)]"
@@ -203,9 +207,11 @@ function MultiExperience({ items }: { items: Experience[] }) {
         style={{ height: `${100 + extraScreens * 100}vh` }}
       >
         <div className="sticky top-0 flex h-svh flex-col bg-black">
-          <ExperienceHeading className="shrink-0 pt-24 md:pt-28" />
+          {/* pb-8/pb-12 gives the "above" cards real vertical clearance so they
+              can never render underneath the heading text */}
+          <ExperienceHeading className="shrink-0 pb-8 pt-24 md:pb-12 md:pt-28" />
 
-          <div className="relative mx-auto hidden min-h-0 w-full max-w-6xl flex-1 px-8 md:flex">
+          <div className="relative mx-auto hidden min-h-0 w-full max-w-6xl flex-1 px-8 pt-4 md:flex">
             <div className="pointer-events-none absolute left-8 right-8 top-1/2 h-[3px] -translate-y-1/2 bg-white/20" />
             <motion.div
               className="pointer-events-none absolute left-8 right-8 top-1/2 h-[3px] -translate-y-1/2 bg-white"
@@ -263,11 +269,8 @@ export default function Experience() {
 
   if (experiences.length === 0) {
     return (
-      <section
-        id="experience"
-        className="relative bg-black text-white"
-      >
-        <ExperienceHeading className="pt-16 md:pt-20" />
+      <section id="experience" className="relative bg-black text-white">
+        <ExperienceHeading className="pb-6 pt-16 md:pb-8 md:pt-20" />
         <p className="px-6 pb-16 text-center text-sm text-white/50">
           Experience coming soon.
         </p>
